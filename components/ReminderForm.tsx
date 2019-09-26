@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DatePickerIOS, Button, StyleSheet, TextInput, View } from 'react-native';
+import { DatePickerIOS, Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import moment from 'moment';
 const uuidv4 = require('uuid/v4');
@@ -7,17 +7,19 @@ const uuidv4 = require('uuid/v4');
 import { saveReminder } from '../store/dal';
 
 const ReminderForm = () => {
-  const [pressed, setPressedCount] = useState(0);
-  const [title, setTitle] = useState('Reminder title');
+  const [title, setTitle] = useState('Please enter a new reminder title.');
   const [chosenDate, setChosenDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const { navigate } = useNavigation();
 
   const handleAddPress = () => {
-    const id = uuidv4();
-    saveReminder(id, { title, endDate: chosenDate, id });
-    navigate('list');
+    if (validateTitle()) {
+      const id = uuidv4();
+      saveReminder(id, { title, endDate: chosenDate, id });
+      navigate('list');
+    }
   }
 
   const showDateTimePicker = () => {
@@ -37,34 +39,48 @@ const ReminderForm = () => {
     setChosenDate(date);
   }
 
+  const validateTitle = () => {
+    if (title === '' || title === 'Please enter a new reminder title.') {
+      setShowError(true);
+      return false;
+    }
+    setShowError(false);
+    return true;
+  }
+  
 
   return (
     <View style={styles.container}>
       <View style={styles.fieldContainer}>
         <TextInput
-          style={styles.text}
+          style={[styles.text, styles.borderTop]}
           onChangeText={text => setTitle(text)}
           value={title}>
         </TextInput>
-        {<TextInput
+        <TextInput
           style={[styles.text, styles.borderTop]}
-          placeholder="Reminder date"
-          value={moment.utc(chosenDate).format('MM/DD/YYYY HH:mm A')}
+          placeholder="Please enter reminder title."
+          value={moment(chosenDate).format('LLL')}
           editable={!showDatePicker}
           onFocus={showDateTimePicker}>
-        </TextInput>}
+        </TextInput>
+        {showError && 
+        <Text style={styles.error}>
+          Please enter a new custom reminder title!
+        </Text>}
         {showDatePicker &&
-        <View>
-          <DatePickerIOS
-          date={chosenDate}
-          onDateChange={setDate}
-        />
-        <Button title="Cancel" onPress={() => hideDateTimePicker()} />
-        <Button title="Save" onPress={() => handleDatePicked()} />
-        </View>}
+          <View>
+            <DatePickerIOS
+              date={chosenDate}
+              onDateChange={setDate}
+              minimumDate={new Date()}
+            />
+            <Button title="Cancel" onPress={() => hideDateTimePicker()} />
+            <Button title="Save" onPress={() => handleDatePicked()} />
+          </View>}
       </View>
-      <View>
-          <Button title="Add reminder" onPress={() => handleAddPress()} />
+      <View style={styles.button}>
+        <Button title="Add reminder" onPress={() => handleAddPress()} />
       </View>
     </View>
   );
@@ -72,8 +88,10 @@ const ReminderForm = () => {
 
 const styles = StyleSheet.create({
   button: {
+    backgroundColor: '#f9f9f9',
     alignItems: 'center',
-    marginBottom: 20,
+    padding: 10,
+    margin: 10,
   },
   borderTop: {
     borderColor: '#edeeef',
@@ -81,11 +99,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#e6e6fa',
+    backgroundColor: '#eaeaea',
     color: "#ed64d9",
     fontWeight: "400",
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  error: {
+    backgroundColor: '#eaeaea',
+    color: "#BE2C36",
+    fontWeight: "600",
+    padding: 10,
   },
   header: {
     alignItems: 'center',

@@ -35,14 +35,12 @@ const Item = ({ id, endDateTime, title, selected, onSelect, onDelete }) => {
 
 const ReminderList = () => {
     const { navigate } = useNavigation();
-    const [ready, setReady] = useState(false);
     const [eventList, setEventList] = useState([]);
     const [selected, setSelected] = useState(new Map());
 
     const loadData = async () => {
         try {
             setEventList(await getAllReminders());
-            setReady(true);
 
         } catch (error) {
             console.log(`error loading data`);
@@ -53,10 +51,10 @@ const ReminderList = () => {
         getAllReminders().then(response => {
             setEventList(response);
         })
-        .catch((error) => {
-            console.log(`error loading data: ${error}`);
-        });
-    }, );
+            .catch((error) => {
+                console.log(`error loading data: ${error}`);
+            });
+    }, [setEventList]);
 
     const onSelect = React.useCallback(
         id => {
@@ -87,7 +85,7 @@ const ReminderList = () => {
                         id={item.id}
                         key={item.id}
                         title={item.title}
-                        endDateTime={moment.utc(item.endDate).local().format('MM/DD/YYYY HH:mm A')}
+                        endDateTime={moment(item.endDate).format('LLL')}
                         selected={!!selected.get(item.id)}
                         onSelect={onSelect}
                         onDelete={onDelete}
@@ -102,9 +100,11 @@ const ReminderList = () => {
             <View style={styles.container}>
                 <Text style={styles.paragraph}>{`You have ${eventList.length} reminders.`}</Text>
             </View>
-            <Button
-                title="Back to home"
-                onPress={() => navigate('home')} />
+            <View style={styles.button}>
+                <Button
+                    title="Back to home"
+                    onPress={() => navigate('home')} />
+            </View>
             <ActionButton
                 key="fab"
                 onPress={() => navigate('form')}
@@ -116,8 +116,13 @@ const ReminderList = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e6e6fa',
+        backgroundColor: '#eaeaea',
         paddingBottom: 30,
+    },
+    button: {
+        backgroundColor: '#f9f9f9',
+        alignItems: 'center',
+        padding: 12,
     },
     item: {
         backgroundColor: '#f9c2ff',
