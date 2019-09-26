@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+    Alert,
     TouchableOpacity,
     FlatList,
     StyleSheet,
@@ -14,20 +15,20 @@ import moment from 'moment';
 import { getAllReminders, deleteReminder } from '../store/dal';
 import { IReminder } from '../interfaces/Reminder';
 
-const Item = ({ id, endDateTime, title, selected, onSelect, onDelete }) => {
+const Item = ({ id, endDateTime, title, selected, onSelect, confirmDelete }) => {
     return (
         <TouchableOpacity
             key={id}
             onPress={() => onSelect(id)}
             style={[
                 styles.item,
-                { backgroundColor: selected ? '#6e3b6e' : '#f9c2ff' },
+                { backgroundColor: selected ? '#c6b6e0' : '#e2daef' },
             ]}
         >
             <Text style={styles.title}>{title}: {endDateTime}</Text>
             <Button
                 title="X"
-                onPress={() => onDelete(id)}
+                onPress={() => confirmDelete(title, id)}
                 color="rgba(108, 140, 255, 1)" />
         </TouchableOpacity>
     );
@@ -54,7 +55,7 @@ const ReminderList = () => {
             .catch((error) => {
                 console.log(`error loading data: ${error}`);
             });
-    }, [setEventList]);
+    });
 
     const onSelect = React.useCallback(
         id => {
@@ -66,10 +67,25 @@ const ReminderList = () => {
         [selected],
     );
 
+    const confirmDelete = React.useCallback(
+        (title, id) => {
+            Alert.alert(`Delete ${title}`,
+                'Are you sure you want to delete this reminder?',
+                [{ text: 'Cancel', onPress: () => onCancel },
+                { text: 'Yes', onPress: () => onDelete(id) }],
+                { cancelable: true })
+        }, [],
+        );
+
+    const onCancel = () => {
+
+    }
+
     const onDelete = React.useCallback(
         id => {
             deleteReminder(id);
             loadData();
+
         },
         [eventList],
     );
@@ -88,7 +104,7 @@ const ReminderList = () => {
                         endDateTime={moment(item.endDate).format('LLL')}
                         selected={!!selected.get(item.id)}
                         onSelect={onSelect}
-                        onDelete={onDelete}
+                        confirmDelete={confirmDelete}
                     />
                 )}
                 keyExtractor={item => item.id}
@@ -120,12 +136,12 @@ const styles = StyleSheet.create({
         paddingBottom: 30,
     },
     button: {
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#daddef',
         alignItems: 'center',
         padding: 12,
     },
     item: {
-        backgroundColor: '#f9c2ff',
+        backgroundColor: '#e2daef',
         fontSize: 12,
         marginHorizontal: 16,
         margin: 20,
@@ -136,7 +152,7 @@ const styles = StyleSheet.create({
     },
     list: {
         margin: 10,
-        backgroundColor: '#e6e6fa',
+        backgroundColor: '#eaeaea',
     },
     paragraph: {
         margin: 24,

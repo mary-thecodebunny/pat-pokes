@@ -88,7 +88,7 @@ const ReminderForm = () => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#daddef',
     alignItems: 'center',
     padding: 10,
     margin: 10,
