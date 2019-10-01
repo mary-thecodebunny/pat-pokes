@@ -11,13 +11,13 @@ const AppNavigator = createStackNavigator({
         title: 'Home'
       }),
     },
-    list: {
+    reminderList: {
       screen: ReminderList,
       navigationOptions: () => ({
-        title: 'Your Reminders'
+        title: 'Your runway reminders'
       }),
     },
-    form: {
+    newReminderForm: {
       screen: ReminderForm,
       navigationOptions: () => ({
         title: 'Add a reminder'

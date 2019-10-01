@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Pat Pokes",
-    "slug": "pat-pokes",
+    "name": "Runway Timers",
+    "slug": "runway-timers",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -13,7 +13,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/CodeBunny_Hero.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

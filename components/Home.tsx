@@ -4,9 +4,7 @@ import { StyleSheet, View, Button, Text } from 'react-native';
 
 const Home = () => {
     const { navigate } = useNavigation();
-    const navigationOptions = ({ navigation }) => ({
-        title: navigation.getParam('home'),
-      });
+
     return (
         <View style={styles.container}>
             <Text>Go to reminder list!</Text>
@@ -14,7 +12,7 @@ const Home = () => {
             <Button
                 title="Add some reminders"
                 onPress={() =>
-                    navigate('list')
+                    navigate('reminderList')
                 }
             />
             </View>

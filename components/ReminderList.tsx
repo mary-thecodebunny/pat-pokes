@@ -13,7 +13,6 @@ import { useNavigation } from 'react-navigation-hooks';
 import moment from 'moment';
 
 import { getAllReminders, deleteReminder } from '../store/dal';
-import { IReminder } from '../interfaces/Reminder';
 
 const Item = ({ id, endDateTime, title, selected, onSelect, confirmDelete }) => {
     return (
@@ -111,10 +110,10 @@ const ReminderList = () => {
                 extraData={selected}
             />}
             {eventList.length === 0 && <View style={styles.container}>
-                <Text style={styles.paragraph}>Please add a reminder.</Text>
+                <Text style={styles.paragraph}>Please add a runway reminder.</Text>
             </View>}
             <View style={styles.container}>
-                <Text style={styles.paragraph}>{`You have ${eventList.length} reminders.`}</Text>
+                <Text style={styles.paragraph}>{`You have ${eventList.length} runway reminders.`}</Text>
             </View>
             <View style={styles.button}>
                 <Button
@@ -123,7 +122,7 @@ const ReminderList = () => {
             </View>
             <ActionButton
                 key="fab"
-                onPress={() => navigate('form')}
+                onPress={() => navigate('newReminderForm')}
                 buttonColor="rgba(108, 140, 255, 1)" />
         </View>
     )

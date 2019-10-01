@@ -34,7 +34,6 @@ export const deleteReminder = async (id: string) => {
 
 export const getAllReminders = async () => {
     let remindersList: IReminder[] = [];
-    console.log(`getAllReminders`);
     await AsyncStorage.getAllKeys().then((keys) => {
         return AsyncStorage.multiGet(keys)
         .then((result) => {

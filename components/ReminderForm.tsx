@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { DatePickerIOS, Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import moment from 'moment';
 const uuidv4 = require('uuid/v4');
 
+import DatePicker from './shared/DatePicker.ios';
 import { saveReminder } from '../store/dal';
 
 const ReminderForm = () => {
-  const [title, setTitle] = useState('Please enter a new reminder title.');
+  const [title, setTitle] = useState('Please enter a new runway reminder title.');
   const [chosenDate, setChosenDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState();
   const [showError, setShowError] = useState(false);
 
   const { navigate } = useNavigation();
@@ -18,7 +19,7 @@ const ReminderForm = () => {
     if (validateTitle()) {
       const id = uuidv4();
       saveReminder(id, { title, endDate: chosenDate, id });
-      navigate('list');
+      navigate('reminderList');
     }
   }
 
@@ -26,16 +27,16 @@ const ReminderForm = () => {
     setShowDatePicker(true);
   }
 
-  const handleDatePicked = () => {
+  let handleDatePicked = () => {
     setChosenDate(chosenDate);
     setShowDatePicker(false);
   }
 
-  const hideDateTimePicker = () => {
+  let hideDateTimePicker = () => {
     setShowDatePicker(false);
   }
 
-  const setDate = (date: Date) => {
+  let setDate = (date: Date) => {
     setChosenDate(date);
   }
 
@@ -48,6 +49,9 @@ const ReminderForm = () => {
     return true;
   }
   
+  hideDateTimePicker = hideDateTimePicker.bind(this);
+  handleDatePicked = handleDatePicked.bind(this);
+  setDate = setDate.bind(this);
 
   return (
     <View style={styles.container}>
@@ -69,15 +73,7 @@ const ReminderForm = () => {
           Please enter a new custom reminder title!
         </Text>}
         {showDatePicker &&
-          <View>
-            <DatePickerIOS
-              date={chosenDate}
-              onDateChange={setDate}
-              minimumDate={new Date()}
-            />
-            <Button title="Cancel" onPress={() => hideDateTimePicker()} />
-            <Button title="Save" onPress={() => handleDatePicked()} />
-          </View>}
+        <DatePicker chosenDate setDate hideDateTimePicker handleDatePicked />}
       </View>
       <View style={styles.button}>
         <Button title="Add reminder" onPress={() => handleAddPress()} />
